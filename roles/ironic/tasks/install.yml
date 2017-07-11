@@ -46,16 +46,26 @@
 
 # RedHat repository
 - block:
+  - debug:
+      msg: "{{ ironic_conductor_os_aux_repo_url }}"
+
   - name: RedHat - Add repository url
     yum:
       name: "{{ ironic_os_repo_url }}"
       state: present
 
+  - debug:
+      msg: ironic_os_repo_key
+
   - name: RedHat - Import repository key
     rpm_key:
       key: "{{ ironic_os_repo_key }}"
       state: present
-    when: ironic_os_repo_key != ""
+    when:
+      ironic_os_repo_key is not none
+#    with_items:
+#
+#      - "{{ ironic_os_repo_key }}"
 
   # Aux repository for shellinabox
   - name: RedHat - Add aux repository
@@ -64,12 +74,11 @@
       state: present
     when: ironic_conductor_os_aux_repo_url != ""
 
-
   - name: RedHat - Import aux repository key
     rpm_key:
       key: "{{ ironic_conductor_os_aux_repo_key }}"
       state: present
-    when: ironic_conductor_os_aux_repo_key  != ""
+    when: ironic_conductor_os_aux_repo_key is not none
 
   when: ansible_os_family == 'RedHat' and not ironic_os_packages
   tags: ["redhat", "repository"]

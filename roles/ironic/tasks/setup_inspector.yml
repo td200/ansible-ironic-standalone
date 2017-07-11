@@ -1,6 +1,13 @@
 ---
 - block:
   # When the IPA images are on a different folder we have to link it
+  
+  - debug:
+      msg: "{{ ironic_inspector_enabled }}"
+
+  - debug:
+      msg: "{{ ironic_pxe_ipa_download }}"
+
   - name: Create links to IPA image/kernel in the tfpboot folder
     file:
       path: "{{ ironic_pxe_tftp_root }}/{{ item }}"
@@ -11,7 +18,9 @@
     with_items:
       - "{{ ironic_pxe_ipa_img_name }}"
       - "{{ ironic_pxe_ipa_kernel_name }}"
-    when: ironic_inspector_enabled and ironic_pxe_ipa_download
+    when:
+      - "ironic_inspector_enabled"
+      - "ironic_pxe_ipa_download"
 
   - name: Delete links to IPA image/kernel in the tfpboot folder
     file:
@@ -20,7 +29,9 @@
     with_items:
       - "{{ ironic_pxe_ipa_img_name }}"
       - "{{ ironic_pxe_ipa_kernel_name }}"
-    when: not ironic_inspector_enabled and ironic_pxe_ipa_download
+    when:
+      - "not ironic_inspector_enabled"
+      - "ironic_pxe_ipa_download"
 
   # When the tinyIPA images are on a different folder we have to link it
   - name: Create links to tiny IPA image/kernel in the tfpboot folder
@@ -33,7 +44,9 @@
     with_items:
       - "{{ ironic_pxe_tinyipa_img_name }}"
       - "{{ ironic_pxe_tinyipa_kernel_name }}"
-    when: ironic_inspector_enabled and ironic_pxe_tinyipa_download
+    when:
+      - "ironic_inspector_enabled"
+      - "ironic_pxe_tinyipa_download"
 
   - name: Delete links to tiny IPA image/kernel in the tfpboot folder
     file:
@@ -42,7 +55,9 @@
     with_items:
       - "{{ ironic_pxe_tinyipa_img_name }}"
       - "{{ ironic_pxe_tinyipa_kernel_name }}"
-    when: not ironic_inspector_enabled and ironic_pxe_tinyipa_download
+    when:
+      - "not ironic_inspector_enabled"
+      - "ironic_pxe_tinyipa_download"
 
   - name: Create tftproot pxelinux.cfg folder
     file:
